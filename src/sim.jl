@@ -2,10 +2,10 @@ using OrderedCollections: LittleDict
 using Memoize
 
 using JuMP
-using Gurobi
+using Gurobi, HiGHS
 
-@memoize gurobienv() = Gurobi.Env()
-makesim() = Sim(Model(() -> Gurobi.Optimizer(gurobienv())))
+# @memoize gurobienv() = Gurobi.Env()
+# makesim() = Sim(Model(() -> Gurobi.Optimizer(gurobienv())))
 
 
 struct PathSim
@@ -13,8 +13,10 @@ struct PathSim
     dsim::LittleDict{Int64,Sim}
     opt::PathOpt
 end
+
 function PathSim(opt::PathOpt)
-    m = Model(() -> Gurobi.Optimizer(gurobienv()))
-    s = LittleDict{Int64,Sim}((y => Sim(m) for y in years(opt))...)
+    # m = Model(() -> Gurobi.Optimizer(gurobienv()))
+    m = Model(HiGHS.Optimizer)
+    s = LittleDict{Int64,Sim}((y => Sim(m, suffix=string(y)) for y in years(opt))...)
     return PathSim(m,s,opt)
 end

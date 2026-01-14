@@ -1,0 +1,5 @@
+include("variabledeployment.jl")
+include("fixeddeployment.jl")
+include("retirement.jl")
+include("singlecost.jl")
+include("lifetime.jl")

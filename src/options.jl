@@ -1,14 +1,16 @@
 using OrderedCollections: LittleDict
 using ArgCheck
 
+using Infiltrator
+
 struct PathOpt
     years::Vector{Int64} # sorted at construction
     discountrate::Float64
     baseyear::Int64
     mesh::LittleDict{Int64,TimeMesh}
-    ini::Dict{String,Float64} # initialized capacity, exempted from cost and construction
+    ini::LittleDict{Int64,Dict{String,Float64}} # initialized capacity, exempted from cost and construction
 
-    function PathOpt(years, discountrate::Float64, baseyear::Int64, mesh::Union{AbstractDict{Int64,TimeMesh},TimeMesh}, ini::Union{Nothing,Dict{String,Float64}})
+    function PathOpt(years, discountrate::Float64, baseyear::Int64, mesh::Union{AbstractDict{Int64,TimeMesh},TimeMesh}, ini) # TODO update ini, must account for year for each sub-capacity
         @argcheck !isempty(years) "years cannot be empty"
         years = sort(years) # invariant: years are sorted at constructor
         @argcheck all(isinteger, years) "years must be integers"
@@ -23,9 +25,14 @@ struct PathOpt
 
         if isnothing(ini)
             ini = Dict{String,Float64}() # initialization of capacity to empty Dict
+        else
+            re_ini = LittleDict{Int64,Dict{String,Float64}}()
+            for (y, d) in sort(ini)
+                re_ini[y] = Dict(k => Float64(v) for (k,v) in d) # cleanup structure & sort
+            end
         end
 
-        new(years, discountrate, baseyear, mesh, ini)
+        new(years, discountrate, baseyear, mesh, re_ini)
     end
 end
 

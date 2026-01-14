@@ -8,12 +8,16 @@ Path model, based on Nosy.jl
 
 include("options.jl")
 include("sim.jl")
+
+include("behaviors/_includes.jl")
+
 include("snapshot.jl")
-include("path.jl")
 include("capacity.jl")
+include("path.jl")
 
 include("constraints.jl")
 
+include("metrics/_includes.jl")
 
 include("example.jl")
 

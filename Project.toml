@@ -6,16 +6,20 @@ authors = ["GKrivtchik <guillaume.krivtchik@gmail.com>"]
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
 Gurobi = "2e9cd046-0924-5485-92f1-d5272153d98b"
+HiGHS = "87dc4568-4c63-4d18-b0c0-bb2238e4078b"
 Infiltrator = "5903a43b-9cc3-4c30-8d17-598619ec4e9b"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
 Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
 Nosy = "b62be552-3e07-49d0-bbfa-d9387eb027f7"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-SystemCostsSE = "f318706a-3a39-46ce-b7a6-7b728c033034"
+
+[sources]
+Nosy = {path = "..\\Nosy.jl"}
 
 [compat]
 ArgCheck = "2.5.0"
 Gurobi = "1.9.1"
+HiGHS = "1.20.1"
 Infiltrator = "1.9.7"
 JuMP = "1.29.3"
 Memoize = "0.4.4"

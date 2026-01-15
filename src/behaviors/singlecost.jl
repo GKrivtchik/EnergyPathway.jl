@@ -5,6 +5,8 @@ Cost is proportional to related capacity (e.g. newly deployed capacity for inves
 """
 
 using ArgCheck
+using OrderedCollections: OrderedDict
+using Memoize: @memoize
 
 using Nosy: getcomponent
 using Nosy: AbstractCostBehaviorData, AbstractCostBehavior
@@ -61,6 +63,47 @@ _modifier(b::SingleCostBehavior) = b.data.modifier
 
 behaviorname(::SingleCostBehavior) = "single cost"
 _apply_constraints!(::Component, ::SingleCostBehavior) = nothing
+
+
+# memoize this function 
+# this function builds once and for all the Dict of deployment costs, at all times
+# it will be used to then generate the deployment costs at specific times
+function _singlecost(p::Path{T}, cname::String, type::Symbol) where T
+    d = OrderedDict{Int64,Dict{Symbol,T}}() # Dict of year => (type => cost)
+    
+    ddep = OrderedDict(y => _deployment(p, cname, y) for y in (first(p.opt.years)-10):p.opt.endyear) #TODO: replace -10 with biggest anticipation
+
+    # initialization of all yearly dict
+    for (y,_) in ddep
+        d[y] = Dict(:deployment => zero(T), :retirement => zero(T))
+    end
+
+    for (y,dep) in ddep
+        if !isempty(dep)
+            # there is a deployment occurring at y
+            for (snapyear, tuple) in dep # all the snapshots the sub-parts or deployment are linked to
+                ratio = tuple[2]
+                snap = getsnapshot(p, snapyear)
+                c = getcomponent(snap, cname)
+                vb = Nosy.behaviors(c, SingleCostBehavior{T})
+                for b in vb
+                    for op in (:deployment, :retirement)
+                        if b.data.operation == op
+                            for (deltay, invratio) in b.data.profile
+                                d[y+deltay][op] += __singlecost(p.snap[snapyear], b, y+deltay, p.opt, type) * ratio * invratio * discount(p.opt, y+deltay)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return d
+end
+
+
+
+discount(o::PathOpt, year::Int) = (1. + o.discountrate)^(o.baseyear - year)
 
 # return the non-discounted cost associated with a SingleCost, at a year shifted by deltayear from current year
 # do NOT call this function if you're unsure what you're doing - it's not discounted

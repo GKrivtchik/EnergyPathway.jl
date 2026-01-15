@@ -12,6 +12,11 @@ mutable struct Path{T}
     end
 end
 
+function getsnapshot(p::Path{T}, y::Int) where T
+    @argcheck y in p.opt.years "y not in path years"
+    return p.snap[y].snap::Snapshot{T}
+end
+
 function Path(opt::PathOpt)
     psim = PathSim(opt)
     dsnap = LittleDict([y => MetaSnapshot(y,Snapshot(psim.dsim[y])) for y in years(opt)])
@@ -33,3 +38,5 @@ end
 
 # key-value iteration over Path
 Base.iterate(d::Path, st...) = iterate(pairs(d.snap), st...)
+
+lastsnapshotyear(p::Path) = maximum(p.opt.years)

@@ -1,17 +1,10 @@
 using JuMP: @variable, GenericAffExpr, set_upper_bound, set_lower_bound, set_start_value
 using ArgCheck: @argcheck
 
-using Nosy: AbstractRegularBehaviorData, AbstractRegularBehavior
 using Nosy: getcapacitybehavior, hasport, hasmodifier, getport, VAL, name, modifiername, _to_affexpr
 
 import Nosy: buildbehavior, _apply_constraints!, behaviorname, _portname, _modifier
 
-
-abstract type AbstractSingleEventData <: AbstractRegularBehaviorData end
-abstract type AbstractSingleEventBehavior{T} <: AbstractRegularBehavior{T} end
-
-abstract type AbstractDeploymentData <: AbstractSingleEventData end
-abstract type AbstractDeploymentBehavior{T} <: AbstractSingleEventBehavior{T} end
 
 """
 Behavior: variable deployment.

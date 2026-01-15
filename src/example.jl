@@ -2,7 +2,7 @@ using Nosy, HiGHS
 
 function test()
 
-    o = PathOpt(2025:5:2030, 0.05, 2020, TimeMesh(), Dict(2015 => Dict("PV" => 10), 2016 => Dict("PV" => 5, "battery" => 12)))
+    o = PathOpt(2020:10:2040, 0.05, 2020, 2100, TimeMesh(), Dict(2015 => Dict("PV" => 10), 2016 => Dict("PV" => 5, "battery" => 12)))
 
     p = Path(o)
 
@@ -39,8 +39,9 @@ function test()
             ProfileSource(elec_carrier, cf_pv),
             [
                 VariableCapacity("output", energy),
-                FixedDeployment("output", energy, 20.),
-                SingleCost(:capex, :deployment, "output", energy, 50000, Dict(-1=>0.5, 0=>0.5)),
+                VariableDeployment("output", energy),
+                SingleCost(:capex, :deployment, "output", energy, 50000, Dict(-2 =>0.333, -1=>0.333, 0=>0.333)),
+                Lifetime(7),
             ]
         )
         connect!(snapshot, pv, grid)
@@ -54,6 +55,7 @@ function test()
                 VariableDeployment("input", energy), # Behavior: variable capacity deployment
                 SingleCost(:capex, :deployment, "input", energy, 30000, Dict(-1=>0.5, 0=>0.5)), # Behavior: annualized fixed cost, tagged as capex, associated with the capacity of the input of the battery (in €/MW)
                 Duration(6), # Behavior: battery duration is 6 hours (i.e. level capacity = 6 * input capacity; output capacity = level capacity)
+                Lifetime(20),
             ]
         )
         connect!(snapshot, battery, grid) # connect the battery to the grid. NB both input and output will be connected

@@ -1,6 +1,6 @@
 include("abstract.jl")
 include("variabledeployment.jl")
 include("fixeddeployment.jl")
-include("retirement.jl")
+include("variableretirement.jl")
 include("singlecost.jl")
 include("lifetime.jl")

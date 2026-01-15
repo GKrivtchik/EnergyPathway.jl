@@ -40,6 +40,7 @@ function test()
             [
                 VariableCapacity("output", energy),
                 VariableDeployment("output", energy),
+                VariableRetirement("output", energy),
                 SingleCost(:capex, :deployment, "output", energy, 50000, Dict(-2 =>0.333, -1=>0.333, 0=>0.333)),
                 Lifetime(7),
             ]
@@ -53,6 +54,7 @@ function test()
             [
                 VariableCapacity("input", energy), # Behavior: variable capacity associated with the input of the battery # in MW
                 VariableDeployment("input", energy), # Behavior: variable capacity deployment
+                VariableRetirement("input", energy),
                 SingleCost(:capex, :deployment, "input", energy, 30000, Dict(-1=>0.5, 0=>0.5)), # Behavior: annualized fixed cost, tagged as capex, associated with the capacity of the input of the battery (in €/MW)
                 Duration(6), # Behavior: battery duration is 6 hours (i.e. level capacity = 6 * input capacity; output capacity = level capacity)
                 Lifetime(20),

@@ -8,3 +8,6 @@ abstract type AbstractSingleEventBehavior{T} <: AbstractPathBehavior{T} end
 
 abstract type AbstractDeploymentData <: AbstractSingleEventData end
 abstract type AbstractDeploymentBehavior{T} <: AbstractSingleEventBehavior{T} end
+
+abstract type AbstractRetirementData <: AbstractSingleEventData end
+abstract type AbstractRetirementBehavior{T} <: AbstractSingleEventBehavior{T} end

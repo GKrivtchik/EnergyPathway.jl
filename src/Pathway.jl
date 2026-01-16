@@ -6,7 +6,7 @@ using Nosy
 Path model, based on Nosy.jl
 """
 
-include("options.jl")
+include("options/_includes.jl")
 include("sim.jl")
 include("snapshot.jl")
 include("capacity.jl")

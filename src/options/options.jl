@@ -9,9 +9,9 @@ struct PathOpt
     baseyear::Int64
     endyear::Int64
     mesh::LittleDict{Int64,TimeMesh}
-    ini::LittleDict{Int64,Dict{String,Float64}} # initialized capacity, exempted from cost and construction
+    ini::InitialCapacity # initialized capacity, exempted from cost and construction
 
-    function PathOpt(years, discountrate::Float64, baseyear::Int, endyear::Int, mesh::Union{AbstractDict{Int64,TimeMesh},TimeMesh}, ini) # TODO update ini, must account for year for each sub-capacity
+    function PathOpt(years, discountrate::Float64, baseyear::Int, endyear::Int, mesh::Union{AbstractDict{Int64,TimeMesh},TimeMesh}; ini=[]) # TODO update ini, must account for year for each sub-capacity
         @argcheck !isempty(years) "years cannot be empty"
         years = sort(years) # invariant: years are sorted at constructor
         @argcheck all(isinteger, years) "years must be integers"

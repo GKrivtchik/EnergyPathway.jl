@@ -1,16 +1,18 @@
 using ArgCheck
 
+using Nosy: AbstractElement
+
 import Nosy: finalize!
 
-struct Path{T}
+struct Path{T} <: AbstractElement{T}
     opt::PathOpt
     sim::PathSim
-    snap::LittleDict{Int64,MetaSnapshot{T}}
+    snap::OrderedDict{Int64,MetaSnapshot{T}}
     finalized::Ref{Bool}
 
-    function Path(opt::PathOpt, sim::PathSim, snap::AbstractDict{Int64,MetaSnapshot{T}}) where T
+    function Path(opt::PathOpt, sim::PathSim, snap::AbstractDict{Int64,MetaSnapshot{T}}, finalized::Ref{Bool}=Ref(false)) where T
         @argcheck years(opt) == sort(collect(keys(snap))) "snapshot years do not match PathOpt years"
-        new{T}(opt, sim, sort(snap), Ref(false)) # invariant: years are sorted at constructor
+        new{T}(opt, sim, sort(snap), finalized) # invariant: years are sorted at constructor
     end
 end
 
@@ -21,7 +23,7 @@ end
 
 function Path(opt::PathOpt)
     psim = PathSim(opt)
-    dsnap = LittleDict([y => MetaSnapshot(y,Snapshot(psim.dsim[y])) for y in years(opt)])
+    dsnap = OrderedDict([y => MetaSnapshot(y,Snapshot(psim.dsim[y])) for y in years(opt)])
     return Path(opt, psim, dsnap)
 end
 

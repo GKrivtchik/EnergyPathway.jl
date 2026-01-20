@@ -1,4 +1,4 @@
-using OrderedCollections: LittleDict
+using OrderedCollections: OrderedDict
 using ArgCheck: @argcheck
 
 using Nosy: TimeMesh
@@ -10,7 +10,7 @@ struct PathOpt
     discountrate::Float64
     baseyear::Int64
     endyear::Int64
-    mesh::LittleDict{Int64,TimeMesh}
+    mesh::OrderedDict{Int64,TimeMesh}
     ini::InitialCapacity # initialized capacity, exempted from cost and construction
 
     function PathOpt(years, discountrate::Float64, baseyear::Int, endyear::Int, mesh::Union{AbstractDict{Int64,TimeMesh},TimeMesh}; ini=[]) # TODO update ini, must account for year for each sub-capacity
@@ -21,9 +21,9 @@ struct PathOpt
         
         if mesh isa AbstractDict
             @argcheck all(haskey(mesh, y) for y in years) "mesh must have entries for all years"
-            mesh = LittleDict(y => mesh[y] for y in years) # adapt to correct format
+            mesh = OrderedDict(y => mesh[y] for y in years) # adapt to correct format
         elseif mesh isa TimeMesh
-            mesh = LittleDict(y => mesh for y in years)
+            mesh = OrderedDict(y => mesh for y in years)
         end
 
         re_ini = InitialCapacity(ini)

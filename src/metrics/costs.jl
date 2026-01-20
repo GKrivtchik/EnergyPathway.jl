@@ -22,7 +22,7 @@ function variablecost(p::Path{T}, cname::String, year::Int, type::Union{Nothing,
 
     # get the Nosy variable cost, then discount it against baseyear
     snap = getsnapshot(p, snapshotyear(p, year))
-    disc = discount(p.opt, year - p.opt.baseyear)
+    disc = discount(p.opt, year)
     if isnothing(type)
         c = Nosy.variablecost(snap, cname)
     else

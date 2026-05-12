@@ -1,0 +1,9 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Pathway = "0c72c9ee-6fe4-4ea5-8f44-21444fbbcfe0"
+
+[sources]
+Pathway = {path = ".."}
+
+[compat]
+Documenter = "1"

@@ -1,5 +1,8 @@
 # Pathway.jl
 
+[![codecov](https://codecov.io/github/GKrivtchik/Pathway.jl/branch/main/graph/badge.svg)](https://app.codecov.io/github/GKrivtchik/Pathway.jl/tree/main)
+[![CI](https://github.com/GKrivtchik/Pathway.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/GKrivtchik/Pathway.jl/actions/workflows/ci.yml)
+
 Pathway is a capacity expansion pathway layer built on top of
 [Nosy.jl](https://github.com/oecd-nea/Nosy.jl).
 

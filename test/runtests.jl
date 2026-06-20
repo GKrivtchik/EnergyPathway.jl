@@ -107,4 +107,15 @@ end
     @test value(deployment(path, "gen", 2030)) ≈ 10.0
     @test value(deployment(path, "late_gen", 2030)) ≈ 0.0
     @test objective_value(model(path)) ≈ 10.0 + 10.0 * discount(opt, 2030)
+
+    capacity_metric(p, cname, year) = cname == "load" ? nothing : capacity(p, cname, year)
+    capacity_table = table(path, capacity_metric)
+    @test names(capacity_table) == ["year", "gen", "late_gen"]
+    @test capacity_table[!, "year"] == collect(2020:2030)
+    @test value.(capacity_table[!, "gen"]) ≈ [fill(10.0, 10); 20.0]
+    @test value.(capacity_table[!, "late_gen"]) ≈ zeros(11)
+
+    full_table = table(path, capacity_metric; removenothing=false)
+    @test names(full_table) == ["year", "gen", "late_gen", "load"]
+    @test all(isnothing, full_table[!, "load"])
 end

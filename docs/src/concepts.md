@@ -19,8 +19,10 @@ needed to connect snapshots through time.
 The preferred incremental workflow starts without declaring years twice:
 
 ```julia
+using HiGHS
+
 opt = PathOpt()
-path = Path(opt)
+path = Path(HiGHS.Optimizer, opt)
 snap = addsnapshot!(path, 2030)
 ```
 

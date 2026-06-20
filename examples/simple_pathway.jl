@@ -1,4 +1,5 @@
 using Pathway
+using HiGHS
 using JuMP: objective_value, set_silent
 
 function populatesnapshot!(snap, demand)
@@ -26,7 +27,7 @@ end
 
 function makepathway(demand_by_year=[2020 => 10, 2030 => 20])
     opt = PathOpt(; mesh=TimeMesh(fill(1 // 1, 2)))
-    path = Path(opt)
+    path = Path(HiGHS.Optimizer, opt)
     set_silent(model(path))
 
     for (year, demand) in demand_by_year
@@ -47,4 +48,3 @@ function makepathway(demand_by_year=[2020 => 10, 2030 => 20])
 end
 
 # path = makepathway()
-

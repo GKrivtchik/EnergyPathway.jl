@@ -65,7 +65,13 @@ function Base.show(io::IO, snap::MetaSnapshot)
 end
 
 function Base.show(io::IO, path::Path)
-    status = _isfinalized(path) ? "finalized" : "not finalized"
+    if _isoptimized(path)
+        status = "optimized"
+    elseif _isfinalized(path)
+        status = "finalized"
+    else
+        status = "not finalized"
+    end
     horizon = isempty(snapshotyears(path)) ? "open horizon" : "$(firstyear(path))-$(lastyear(path))"
     print(io, "Pathway with $(length(path)) snapshot year(s) ($(_year_summary(snapshotyears(path)))) over $horizon, $status")
 end

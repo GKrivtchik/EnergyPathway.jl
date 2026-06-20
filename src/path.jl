@@ -1,18 +1,11 @@
 using ArgCheck
+using JuMP: AffExpr
 
-using Nosy: AbstractElement, Snapshot, getnodes, getcomponents
-
+using Nosy: AbstractElement, Snapshot, getnodes, getcomponents, _exptype
 import Nosy: finalize!, model, sim
 
-"""
-    Path(opt::PathOpt; kwargs...)
 
-A multi-year pathway made of one Nosy `Snapshot` per snapshot year and one
-shared JuMP model.
 
-Keyword arguments are forwarded to `PathSim`, for example
-`Path(opt; optimizer=HiGHS.Optimizer)`.
-"""
 struct Path{T} <: AbstractElement{T}
     opt::PathOpt
     sim::PathSim
@@ -27,6 +20,22 @@ struct Path{T} <: AbstractElement{T}
 end
 
 """
+    Path(optimizer, opt::PathOpt)
+
+Return a multi-year pathway made of one Nosy `Snapshot` per snapshot year and one
+shared JuMP model.
+"""
+function Path(optimizer, opt::PathOpt)
+    psim = PathSim(optimizer, opt)
+    T = _exptype(psim.model)
+    dsnap = OrderedDict{Int64,MetaSnapshot{T}}()
+    for y in years(opt)
+        dsnap[y] = MetaSnapshot{T}(y, Snapshot(psim.dsim[y]))
+    end
+    return Path(opt, psim, dsnap)
+end
+
+"""
     getsnapshot(path, year)
 
 Return the Nosy `Snapshot` for snapshot `year`.
@@ -36,15 +45,6 @@ function getsnapshot(p::Path{T}, y::Int) where T
     return p.snap[y].snap::Snapshot{T}
 end
 
-function Path(opt::PathOpt; kwargs...)
-    psim = PathSim(opt; kwargs...)
-    T = psim.type
-    dsnap = OrderedDict{Int64,MetaSnapshot{T}}()
-    for y in years(opt)
-        dsnap[y] = MetaSnapshot(y, Snapshot(psim.dsim[y]))
-    end
-    return Path(opt, psim, dsnap)
-end
 
 """
     addsnapshot!(path, year; mesh=nothing)
@@ -172,6 +172,9 @@ function alltech(p::Path; cwith=Symbol[], cwithout=Symbol[], nwith=Symbol[], nwi
 end
 
 _isfinalized(p::Path) = p.finalized[]
+_isoptimized(p::Path{<:Number}) = true
+_isoptimized(p::Path) = false
+
 
 function finalize!(p::Path)
     p.finalized[] && return

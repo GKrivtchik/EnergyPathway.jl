@@ -9,7 +9,7 @@ deploy in each snapshot year.
 
 ```julia
 using Pathway
-using JuMP: set_silent, value, objective_value
+using HiGHS
 ```
 
 Put the year-indexed input data in one place. `PathOpt` can start without a
@@ -21,8 +21,7 @@ meshes.
 demand_by_year = [2020 => 10, 2030 => 20]
 
 opt = PathOpt(; mesh=TimeMesh(fill(1 // 1, 2)))
-path = Path(opt)
-set_silent(model(path))
+path = Path(HiGHS.Optimizer, opt)
 ```
 
 ## Build Each Snapshot
@@ -47,7 +46,9 @@ function add_year!(snap, demand)
             VariableDeployment("output", energy),
             VariableRetirement("output", energy),
             Lifetime(30),
-            SingleCost(:capex, :deployment, "output", energy, 1.0, nothing),
+            SingleCost(:capex, :deployment, "output", energy, 1E6, nothing), # USD/MW
+            FixedCost(:OM, "output", energy, 10000.), # USD/MW/year
+            VariableCost(:variable, "output", energy, 50.) # USD/MWh
         ],
     )
     connect!(snap, generator, grid)
@@ -92,11 +93,10 @@ snapshot, then adds dynamic constraints linking capacity through time.
 ## Inspect Results
 
 ```julia
-value(capacity(path, "gen", 2020))     # 10.0
-value(capacity(path, "gen", 2030))     # 20.0
-value(deployment(path, "gen", 2030))   # 10.0
-objective_value(model(path))
-```
+p = extract(path) # generate a Path populated with the optimal solution
 
-The same model is available as a runnable script in
-[`examples/simple_pathway.jl`](https://github.com/oecd-nea/Pathway.jl/blob/main/examples/simple_pathway.jl).
+capacity(p, "gen", 2020)     # 10.0
+capacity(p, "gen", 2030)     # 20.0
+deployment(p, "gen", 2030)   # 10.0
+cost(p)                      # 1.7082033001862876e7
+```

@@ -62,7 +62,6 @@ include("constraints/_includes.jl")
 
 include("optimization/_includes.jl")
 
-include("example.jl")
 include("show.jl")
 
 end # module Pathway

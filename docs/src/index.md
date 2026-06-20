@@ -25,27 +25,28 @@ using Pathway
 
 ## Requirements
 
-Pathway uses JuMP through Nosy. You need a JuMP-compatible LP/MILP solver. The
-default `Path` constructor uses HiGHS:
+Pathway uses JuMP through Nosy. You need a JuMP-compatible LP/MILP solver.
+Pass the optimizer constructor when constructing a `Path`:
 
 ```julia
+using HiGHS
+
 opt = PathOpt(2020:10:2050)
-path = Path(opt)
+path = Path(HiGHS.Optimizer, opt)
 ```
 
 or start with no years and add snapshots explicitly:
 
 ```julia
+using HiGHS
+
 opt = PathOpt()
-path = Path(opt)
+path = Path(HiGHS.Optimizer, opt)
 snap = addsnapshot!(path, 2030)
 ```
 
-You can provide another optimizer:
-
-```julia
-path = Path(opt; optimizer=HiGHS.Optimizer)
-```
+The same form works with any JuMP optimizer constructor; pass it in place of
+`HiGHS.Optimizer`.
 
 ## Author
 

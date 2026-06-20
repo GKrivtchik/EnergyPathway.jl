@@ -5,8 +5,6 @@ authors = ["Guillaume KRIVTCHIK"]
 
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
-Gurobi = "2e9cd046-0924-5485-92f1-d5272153d98b"
-HiGHS = "87dc4568-4c63-4d18-b0c0-bb2238e4078b"
 Infiltrator = "5903a43b-9cc3-4c30-8d17-598619ec4e9b"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
 Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
@@ -15,7 +13,6 @@ OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 
 [compat]
 ArgCheck = "2.5.0"
-Gurobi = "1.9.1"
 HiGHS = "1.20.1"
 Infiltrator = "1.9.7"
 JuMP = "1.29.3"
@@ -24,7 +21,8 @@ Nosy = "0.2.1"
 OrderedCollections = "1.8.1"
 
 [extras]
+HiGHS = "87dc4568-4c63-4d18-b0c0-bb2238e4078b"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["HiGHS", "Test"]

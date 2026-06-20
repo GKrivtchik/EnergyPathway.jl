@@ -27,12 +27,15 @@ using Pathway
 
 ## Requirements
 
-Pathway requires Nosy and a JuMP-compatible LP/MILP solver. The default
-constructor uses HiGHS, which is open source and convenient for small examples.
-Any JuMP optimizer can be passed when constructing a `Path`:
+Pathway requires Nosy and a JuMP-compatible LP/MILP solver. Pass the optimizer
+constructor when constructing a `Path`:
 
 ```julia
-path = Path(opt; optimizer=HiGHS.Optimizer)
+using Pathway
+using HiGHS
+
+opt = PathOpt()
+path = Path(HiGHS.Optimizer, opt)
 ```
 
 
@@ -44,12 +47,13 @@ two snapshot years. Demand grows from 10 to 20, so the optimal pathway deploys
 
 ```julia
 using Pathway
+using HiGHS
 using JuMP: set_silent, value
 
 demand_by_year = [2020 => 10, 2030 => 20]
 
 opt = PathOpt(; mesh=TimeMesh(fill(1 // 1, 2)))
-path = Path(opt)
+path = Path(HiGHS.Optimizer, opt)
 set_silent(model(path))
 
 for (year, demand) in demand_by_year

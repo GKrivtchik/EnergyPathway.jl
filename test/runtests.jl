@@ -1,7 +1,8 @@
 using Pathway
 using Test
 
-using JuMP: is_solved_and_feasible, objective_value, set_silent, value
+using HiGHS
+using JuMP: is_solved_and_feasible, objective_value, set_silent, solver_name, value
 using Nosy: nsteps
 
 function add_dispatch_system!(snap, demand; late=false)
@@ -38,6 +39,16 @@ end
     @test InitialCapacity([(year=2010, cname="gen", capacity=2, lifetime=20)]).capacities[2010][1].cname == "gen"
     @test FixedRetirement("output", energy, 0) isa FixedRetirement
 
+    psim = PathSim(HiGHS.Optimizer, PathOpt(2020:10:2030; mesh=mesh2))
+    @test occursin("ScaledOptimizer", solver_name(psim.model))
+    @test psim.model === psim.dsim[2020].model
+    @test psim.dsim[2030].options[:scalingtarget] == 1
+
+    jump_model = Model()
+    psim = PathSim(jump_model, PathOpt(2020:10:2020; mesh=mesh2))
+    @test psim.model === jump_model
+    @test psim.dsim[2020].model === jump_model
+
     ini = InitialCapacity([(2010, "gen", 2, 20)])
     @test sprint(show, ini.capacities[2010][1]) == "Historical capacity \"gen\" (2.0, lifetime 20 year(s))"
     @test sprint(show, ini) == "Initial capacity with 1 entry in 1 year(s)"
@@ -49,7 +60,7 @@ end
     @test sprint(show, Lifetime(30)) == "Lifetime (30 year(s))"
     @test sprint(show, SingleCost(:capex, :deployment, "output", energy, 1.0, nothing)) == "Single cost :capex on deployment of \"output\" energy (1.0, profile 0 => 1.0)"
 
-    empty_path = Path(PathOpt(; mesh=mesh2))
+    empty_path = Path(HiGHS.Optimizer, PathOpt(; mesh=mesh2))
     set_silent(model(empty_path))
     @test isempty(snapshotyears(empty_path))
     @test occursin("Pathway with 0 snapshot year(s) (no years)", sprint(show, empty_path))
@@ -66,7 +77,7 @@ end
     @test lastyear(empty_path) == 2030
 
     opt = PathOpt(2020:10:2030; discountrate=0.05, endyear=2030, mesh=mesh2)
-    path = Path(opt)
+    path = Path(HiGHS.Optimizer, opt)
     set_silent(model(path))
 
     @test length(path) == 2
@@ -75,7 +86,7 @@ end
     @test nsteps(sim(path, 2020)) == 2
     @test alltech(path) == String[]
     @test occursin("Pathway with 2 snapshot year(s) (2020:10:2030)", sprint(show, path))
-    @test sprint(show, path.sim) == "Path simulation (2 snapshot year(s), HiGHS)"
+    @test sprint(show, path.sim) == "Path simulation (2 snapshot year(s), ScaledOptimizer(HiGHS))"
     @test startswith(sprint(show, path.snap[2020]), "Meta snapshot 2020: Snapshot with 0 component(s)")
 
     add_dispatch_system!(path[2020], 10)

@@ -1,10 +1,10 @@
-using Nosy, HiGHS
+using Pathway
 
-function test()
+function test(optimizer)
 
     o = PathOpt(2020:10:2040, 0.05, 2020, 2100, TimeMesh(), ini=[(2010, "PV", 100, 25), (2010, "battery", 50, 15), (2015, "PV", 200, 25)])
 
-    p = Path(o)
+    p = Path(optimizer, o)
 
     for (y, ms) in p
 

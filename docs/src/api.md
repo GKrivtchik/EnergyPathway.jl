@@ -53,5 +53,6 @@ singlecost
 cost
 fixedcost
 variablecost
+table
 discount
 ```

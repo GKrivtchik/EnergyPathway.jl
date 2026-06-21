@@ -20,7 +20,7 @@ meshes.
 ```julia
 demand_by_year = [2020 => 10, 2030 => 20]
 
-opt = PathOpt(; mesh=TimeMesh(fill(1 // 1, 2)))
+opt = PathOpt(; mesh=TimeMesh(fill(1 // 1, 2)), endyear=2040)
 path = Path(HiGHS.Optimizer, opt)
 ```
 

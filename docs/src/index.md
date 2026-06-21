@@ -50,8 +50,7 @@ The same form works with any JuMP optimizer constructor; pass it in place of
 
 ## Author
 
-EnergyPathway is authored by Guillaume KRIVTCHIK at the OECD Nuclear Energy Agency
-(OECD-NEA).
+EnergyPathway is authored by Guillaume KRIVTCHIK.
 
 ## Pages
 

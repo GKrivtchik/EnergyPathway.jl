@@ -18,7 +18,7 @@ using EnergyPathway
 ```
 
 The full documentation is built with Documenter.jl and is available at
-<https://GKrivtchik.github.io/EnergyPathway.jl/dev/>.
+<https://gkrivtchik.com/EnergyPathway.jl/dev/>.
 
 ## Highlights
 
@@ -84,11 +84,14 @@ for (year, demand) in demand_by_year
     connect!(snap, generator, grid)
 end
 
-optimize!(path, cost(path))
+optimize!(path, cost(path)) # optimize the Path
 
-value(capacity(path, "gen", 2020))     # 10.0
-value(capacity(path, "gen", 2030))     # 20.0
-value(deployment(path, "gen", 2030))   # 10.0
+p = extract(path) # generate a Path populated with the optimal solution
+
+capacity(p, "gen", 2020)     # 10.0
+capacity(p, "gen", 2030)     # 20.0
+deployment(p, "gen", 2030)   # 10.0
+cost(p)                      # 1.7082033001862876e7
 ```
 
 See [`examples/simple_pathway.jl`](examples/simple_pathway.jl) for a complete

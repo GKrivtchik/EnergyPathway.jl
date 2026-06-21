@@ -3,7 +3,7 @@ using EnergyPathway
 
 makedocs(
     sitename="EnergyPathway.jl",
-    authors="Guillaume KRIVTCHIK, OECD Nuclear Energy Agency (OECD-NEA)",
+    authors="Guillaume KRIVTCHIK",
     modules=[EnergyPathway],
     checkdocs=:exports,
     repo="https://github.com/GKrivtchik/EnergyPathway.jl/blob/{commit}{path}#L{line}",

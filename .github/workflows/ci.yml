@@ -9,15 +9,21 @@ on:
 
 jobs:
   test:
-    name: Julia 1.12 - Ubuntu
+    name: Julia ${{ matrix.julia-version }} - Ubuntu
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        julia-version:
+          - "1.11"
+          - "1.12"
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: julia-actions/setup-julia@v2
         with:
-          version: "1.12"
+          version: ${{ matrix.julia-version }}
 
       - uses: julia-actions/cache@v2
 

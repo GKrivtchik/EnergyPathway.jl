@@ -1,6 +1,6 @@
 name = "EnergyPathway"
 uuid = "0c72c9ee-6fe4-4ea5-8f44-21444fbbcfe0"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Guillaume KRIVTCHIK"]
 
 [deps]

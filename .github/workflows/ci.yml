@@ -28,7 +28,9 @@ jobs:
       - uses: julia-actions/julia-processcoverage@v1
 
       - name: Build documentation
-        run: julia --project=docs docs/make.jl
+        run: |
+          julia --project=docs -e 'using Pkg; Pkg.instantiate()'
+          julia --project=docs docs/make.jl
         env:
           CI: "false"
 

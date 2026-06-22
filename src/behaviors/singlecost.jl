@@ -73,8 +73,19 @@ function _singlecost(p::Path{T}, cname::String, type::Union{Nothing,Symbol}) whe
     
     ddep = OrderedDict(y => _deployment(p, cname, y) for y in first(p.opt.years):p.opt.endyear) # NB currently ini has zero single cost, so iteration could be limited to years starting first snapshot year
 
+    firstcostyear = firstyear(p)
+    for (_, snap) in p
+        hascomponent(snap.snap, cname) || continue
+        c = getcomponent(snap.snap, cname)
+        for b in Nosy.behaviors(c, SingleCostBehavior{T})
+            (isnothing(type) || b.data.type == type) || continue
+            isempty(b.data.profile) && continue
+            firstcostyear = min(firstcostyear, first(p.opt.years) + minimum(keys(b.data.profile)))
+        end
+    end
+
     # initialization of all yearly dict
-    for y in allyears(p)
+    for y in firstcostyear:lastyear(p)
         d[y] = Dict(:deployment => zero(T), :retirement => zero(T))
     end
 

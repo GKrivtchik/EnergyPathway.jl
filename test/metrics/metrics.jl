@@ -10,6 +10,18 @@
     @test value(deployment(path, "late_gen", 2030)) ≈ 0.0
     @test objective_value(model(path)) ≈ 10.0 + 10.0 * discount(path.opt, 2030)
 
+    split_cost_path = Path(
+        HiGHS.Optimizer,
+        PathOpt([2020]; discountrate=0.05, endyear=2020, mesh=mesh2),
+    )
+    set_silent(model(split_cost_path))
+    add_fixed_dispatch_system!(split_cost_path[2020], "front_loaded", 5, 5; deployment_value=5)
+    @test singlecost(split_cost_path, "front_loaded", 2019, :capex) == 5 * 4 * 0.25 * discount(split_cost_path.opt, 2019)
+    @test singlecost(split_cost_path, "front_loaded", :capex) == 5 * 4 * (
+        0.25 * discount(split_cost_path.opt, 2019) +
+        0.75 * discount(split_cost_path.opt, 2020)
+    )
+
     capacity_metric(p, cname, year) = cname == "load" ? nothing : capacity(p, cname, year)
     capacity_table = table(path, capacity_metric)
     @test names(capacity_table) == ["year", "gen", "late_gen"]

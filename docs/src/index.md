@@ -55,5 +55,6 @@ EnergyPathway is authored by Guillaume KRIVTCHIK.
 ## Pages
 
 - [Tutorial](@ref): a complete two-year capacity expansion model.
+- [Examples](@ref): worked examples built in the style of the Nosy examples.
 - [EnergyPathway Concepts](@ref): the main objects and behaviors.
 - [API Reference](@ref): exported EnergyPathway types and functions.

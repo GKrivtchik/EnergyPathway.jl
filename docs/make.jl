@@ -16,6 +16,10 @@ makedocs(
     pages=[
         "Home" => "index.md",
         "Tutorial" => "tutorial.md",
+        "Examples" => [
+            "Overview" => "examples.md",
+            "Facility Transition" => "examples/facility-transition.md",
+        ],
         "EnergyPathway Concepts" => "concepts.md",
         "API Reference" => "api.md",
     ],
